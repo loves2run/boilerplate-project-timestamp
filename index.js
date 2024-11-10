@@ -24,6 +24,64 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+//timestamp without date parmater
+app.get('/api/', function (req, res) {
+  const date = new Date();
+  res.json({ unix: date.valueOf(), utc: date.toUTCString() });
+});
+
+//Timestamp API with date parmeter provided
+app.get("/api/:date?", function (req, res) {
+  let dateParam = req.params.date;
+  let date;
+
+  //handle unix timestamp
+  if (/^\d+$/.test(dateParam)) {
+    date = new Date(parseInt(dateParam, 10));
+  }
+
+  //handlet utc timestamp
+  else {
+    date = new Date(dateParam);
+  }
+
+  //check for invalid date
+
+  if (isNaN(date.getTime())) {
+    return res.json({ error: "Invalid Date" });
+  }
+
+  //return formatted response
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+});
+
+
+// app.get("/api/:date_string", function(req, res) {
+//   const dateString = req.params.date_string;
+//   let date;
+  
+//   // Try to create date object
+//   if (/^\d+$/.test(dateString)) {
+//       date = new Date(parseInt(dateString));
+//   } else {
+//       date = new Date(dateString);
+//   }
+
+//   // Check if date is invalid
+//   if (date.toString() === 'Invalid Date') {
+//       // Send error response and stop function
+//       return res.json({ error: "Invalid Date" });
+//   }
+
+//   // If we get here, date is valid
+//   res.json({
+//       unix: date.getTime(),
+//       utc: date.toUTCString()
+//   });
+// });
 
 
 // Listen on port set in environment variable or default to 3000
